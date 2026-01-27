@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>franca</title>
+    <style>
+        @font-face {
+            font-family: 'SF Pro Rounded';
+            src: local('SF Pro Rounded'), local('.SF NS Rounded'), local('SFProRounded-Regular');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'SF Pro Rounded';
+            src: local('SF Pro Rounded Medium'), local('.SF NS Rounded Medium'), local('SFProRounded-Medium');
+            font-weight: 500;
+        }
+        @font-face {
+            font-family: 'SF Pro Rounded';
+            src: local('SF Pro Rounded Semibold'), local('.SF NS Rounded Semibold'), local('SFProRounded-Semibold');
+            font-weight: 600;
+        }
+        @font-face {
+            font-family: 'SF Pro Rounded';
+            src: local('SF Pro Rounded Bold'), local('.SF NS Rounded Bold'), local('SFProRounded-Bold');
+            font-weight: 700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Rounded', ui-rounded, 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            color: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .title {
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.25rem;
+        }
+
+        .tagline {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-weight: 500;
+            min-height: 2.5rem;
+            color: #007AFF;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: #007AFF;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 0.8s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 2rem;
+            font-size: 0.875rem;
+            color: #999;
+        }
+
+        .footer a {
+            color: #999;
+            text-decoration: none;
+            transition: color 0.2s ease-out;
+        }
+
+        .footer a:hover {
+            color: #666;
+        }
+
+        .footer span {
+            margin: 0 0.5rem;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #000;
+                color: #fff;
+            }
+
+            .cursor {
+                background: #0A84FF;
+            }
+
+            .tagline {
+                color: #0A84FF;
+            }
+
+            .footer a {
+                color: #666;
+            }
+
+            .footer a:hover {
+                color: #888;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">franca</h1>
+        <p class="tagline"><span id="text"></span><span class="cursor"></span></p>
+    </div>
+
+    <footer class="footer">
+        <a href="privacy.html">Privacy</a>
+        <span>&middot;</span>
+        <a href="mailto:hello@franca.app">hello@franca.app</a>
+    </footer>
+
+    <script>
+        const phrases = [
+            'Learning by listening.',
+            'Aprender escuchando.',
+            'Apprendre en écoutant.',
+            'Imparare ascoltando.',
+            'Lernen durch Zuhören.',
+            'Учиться слушая.',
+            'Aprender ouvindo.',
+            '聞いて学ぶ。',
+            '들으며 배우다.',
+            '听着学习。',
+        ];
+
+        const textEl = document.getElementById('text');
+        const charInterval = 12;
+        const dwellTime = 2000;
+        let phraseIndex = 0;
+
+        function typePhrase(phrase, callback) {
+            let i = 0;
+            function type() {
+                if (i <= phrase.length) {
+                    textEl.textContent = phrase.slice(0, i);
+                    i++;
+                    setTimeout(type, charInterval);
+                } else {
+                    callback();
+                }
+            }
+            type();
+        }
+
+        function deletePhrase(callback) {
+            let text = textEl.textContent;
+            function del() {
+                if (text.length > 0) {
+                    text = text.slice(0, -1);
+                    textEl.textContent = text;
+                    setTimeout(del, charInterval);
+                } else {
+                    callback();
+                }
+            }
+            del();
+        }
+
+        function animate() {
+            typePhrase(phrases[phraseIndex], () => {
+                setTimeout(() => {
+                    deletePhrase(() => {
+                        phraseIndex = (phraseIndex + 1) % phrases.length;
+                        setTimeout(animate, 100);
+                    });
+                }, dwellTime);
+            });
+        }
+
+        setTimeout(animate, 300);
+    </script>
+</body>
+</html>
